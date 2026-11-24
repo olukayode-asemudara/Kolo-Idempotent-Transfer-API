@@ -4,7 +4,10 @@ import com.kolo.idempotencytransfer.data.models.Account;
 import com.kolo.idempotencytransfer.data.repositories.AccountRepository;
 import com.kolo.idempotencytransfer.dto.requests.AccountRequestDTO;
 import com.kolo.idempotencytransfer.dto.responses.AccountResponseDTO;
+import com.kolo.idempotencytransfer.exception.AccountNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AccountService {
     private final AccountRepository accountRepository;
 
@@ -29,7 +32,7 @@ public class AccountService {
 
     public AccountResponseDTO getAccountById(Long id) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
         return new AccountResponseDTO(
                 account.getId(),
