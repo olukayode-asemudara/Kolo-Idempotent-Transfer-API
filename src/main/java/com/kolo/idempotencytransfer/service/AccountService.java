@@ -26,4 +26,15 @@ public class AccountService {
                 savedAccount.getBalance()
         );
     }
+
+    public AccountResponseDTO getAccountById(Long id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        return new AccountResponseDTO(
+                account.getId(),
+                account.getOwnerName(),
+                account.getBalance()
+        );
+    }
 }
