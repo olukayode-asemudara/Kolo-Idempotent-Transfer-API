@@ -25,6 +25,10 @@ public class TransferService {
     @Transactional
     public void transfer(Long fromAccountId, Long toAccountId, BigDecimal amount) {
 
+        if (amount.compareTo(new BigDecimal("0.00")) <= 0) {
+            throw new IllegalArgumentException("Transfer amount must be greater than zero");
+        }
+
         if (fromAccountId.equals(toAccountId)) {
             throw new IllegalArgumentException("Cannot transfer money to the same account");
         }
@@ -34,6 +38,10 @@ public class TransferService {
 
         Account recipient = accountRepository.findById(toAccountId)
                 .orElseThrow(() -> new RuntimeException("Recipient account not found"));
+
+        if (sender.getBalance().compareTo(amount) < 0) {
+            throw new IllegalArgumentException("Insufficient funds");
+        }
 
         sender.setBalance(sender.getBalance().subtract(amount));
         recipient.setBalance(recipient.getBalance().add(amount));
